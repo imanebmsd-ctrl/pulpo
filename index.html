@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Pulpo – Organise tes voyages autrement</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f6f7f9;
+      color: #222;
+    }
+
+    header {
+      padding: 70px 20px;
+      text-align: center;
+      background: linear-gradient(135deg, #5f2eea, #3a86ff);
+      color: white;
+    }
+
+    header h1 {
+      margin-bottom: 10px;
+      font-size: 2.5rem;
+    }
+
+    header p {
+      max-width: 600px;
+      margin: auto;
+      font-size: 1.1rem;
+    }
+
+    nav {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      padding: 20px;
+      background: white;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    select {
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    main {
+      padding: 30px 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    h2 {
+      margin-top: 60px;
+      margin-bottom: 20px;
+      font-size: 1.6rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: white;
+      padding: 18px;
+      border-radius: 14px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 12px;
+      background: #ede9fe;
+      color: #5f2eea;
+      padding: 4px 8px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 14px;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Pulpo</h1>
+  <p>
+    L’outil intelligent pour organiser tes voyages : lieux géolocalisés,
+    activités par thèmes, restaurants filtrés et expériences insolites.
+  </p>
+</header>
+
+<nav>
+  <select id="themeFilter">
+    <option value="">Tous les thèmes</option>
+    <option value="nature">Nature</option>
+    <option value="culture">Culture</option>
+    <option value="sport">Sport</option>
+    <option value="insolite">Insolite</option>
+  </select>
+
+  <select id="budgetFilter">
+    <option value="">Tous les budgets</option>
+    <option value="cheap">Pas cher</option>
+    <option value="mid">Moyen</option>
+    <option value="premium">Cher</option>
+  </select>
+</nav>
+
+<main>
+
+  <section>
+    <h2>Activités recommandées par Pulpo</h2>
+    <div id="activities" class="grid"></div>
+  </section>
+
+  <section>
+    <h2>Restaurants sélectionnés</h2>
+    <div id="restaurants" class="grid"></div>
+  </section>
+
+  <section>
+    <h2>Voyages insolites 🐙</h2>
+    <div id="insolite" class="grid"></div>
+  </section>
+
+</main>
+
+<footer>
+  Pulpo — Voyager doit être simple, inspirant et personnel.
+</footer>
+
+<script>
+  const activitiesData = [
+    {
+      name: "Randonnée panoramique",
+      theme: "nature",
+      description: "Parcours nature avec vue imprenable.",
+      info: "Matin recommandé • Printemps / Été"
+    },
+    {
+      name: "Visite historique guidée",
+      theme: "culture",
+      description: "Découverte du patrimoine local.",
+      info: "Faible affluence l'après-midi"
+    },
+    {
+      name: "Kayak en rivière",
+      theme: "sport",
+      description: "Activité sportive en pleine nature.",
+      info: "Été • Demi-journée"
+    },
+    {
+      name: "Saut à l'élastique",
+      theme: "insolite",
+      description: "Expérience à sensations fortes.",
+      info: "Réservation obligatoire"
+    }
+  ];
+
+  const restaurantsData = [
+    {
+      name: "Bistro local",
+      budget: "cheap",
+      description: "Cuisine locale authentique.",
+      info: "Petit budget • Centre-ville"
+    },
+    {
+      name: "Table panoramique",
+      budget: "premium",
+      description: "Cuisine raffinée avec vue exceptionnelle.",
+      info: "Coucher de soleil conseillé"
+    }
+  ];
+
+  const activitiesContainer = document.getElementById("activities");
+  const restaurantsContainer = document.getElementById("restaurants");
+  const insoliteContainer = document.getElementById("insolite");
+
+  function renderCards(data, container) {
+    container.innerHTML = "";
+    data.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <span class="tag">${item.theme || item.budget}</span>
+        <h3>${item.name}</h3>
+        <p>${item.description}</p>
+        <small>${item.info}</small>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function filterContent() {
+    const theme = document.getElementById("themeFilter").value;
+    const budget = document.getElementById("budgetFilter").value;
+
+    const filteredActivities = theme
+      ? activitiesData.filter(a => a.theme === theme)
+      : activitiesData;
+
+    const filteredRestaurants = budget
+      ? restaurantsData.filter(r => r.budget === budget)
+      : restaurantsData;
+
+    renderCards(filteredActivities, activitiesContainer);
+    renderCards(filteredRestaurants, restaurantsContainer);
+
+    const insolite = activitiesData.filter(a => a.theme === "insolite");
+    renderCards(insolite, insoliteContainer);
+  }
+
+  document.getElementById("themeFilter").addEventListener("change", filterContent);
+  document.getElementById("budgetFilter").addEventListener("change", filterContent);
+
+  filterContent();
+</script>
+
+</body>
+</html>
